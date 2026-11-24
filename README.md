@@ -63,3 +63,26 @@ Upload the `dist` folder to Netlify Drop (https://app.netlify.com/drop). On the 
 - `src/hooks/useSource.js` the three ways of linking data
 - `src/views/` one file per page
 - `src/styles.css` colours and fonts (light mode)
+
+## 6. Machine list (owned, rented, how many more machines are needed)
+
+The board reads your company machine list the same way it reads the plan.
+
+1. Export the machine list to Excel and save it as `public/data/machines.xlsx` (replace the old file). Open that file in Excel, edit, and press Save: the board updates within a few seconds.
+   - Or press **Link machines file** at the top and pick the file (Chrome or Edge).
+   - Or add a tab called `Machine List` to your Google Sheet (same Sheet ID as the plan).
+2. The header row must contain these columns: `Machine Type*`, `Machine Sub-category`, `Line No`, `Type of Purchase*`, `Machine Status*`. Other columns (serial, brand, model) are shown in the Machine list page.
+3. Pages:
+   - **Fleet**: machines registered, owned, rented, spare, and **more machines needed**, then a have-versus-need table for every machine type.
+   - **Lines**: one card per line. Click a line for its machines (owned and rented), and what the plan needs there.
+   - **Machine list**: every machine, with search and filters by line, owned or rented, status.
+   - **Data check**: plan machines not found in the machine list, and problems in the list (duplicate serials and so on).
+
+How the numbers are worked out:
+- Test machines (Type of Purchase = Test) are never counted.
+- "Usable" machines are Active and Available ones. "Pending Approval" is counted, "Under Maintenance" is not. You can change this with the tick boxes on the Fleet and Lines pages.
+- "Needed" is the most machines the plan asks for on any one day in the chosen range (Next 2 weeks or Whole sheet).
+- "More machines needed" adds up the shortage of every machine type that exists in the machine list.
+- Machine types whose name is not found in the machine list are shown separately as "Names not matched". They are NOT added to the shortage. Fix the spelling in Excel, or add the name to `machineAliases` in `src/config.js`.
+- A plan module is linked to a line by name (module 101 = Line 101). If a module has a different name from its line, add it to `lineAliases` in `src/config.js`.
+- `src/config.js` already contains name matches that were guessed from the two files. Please check them.

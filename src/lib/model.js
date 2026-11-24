@@ -10,7 +10,7 @@ export const sumM = o => Object.values(o).reduce((a, b) => a + b, 0);
 export const fmtDay = s => { const d = dt(s); return `${d.getDate()} ${MON[d.getMonth()]}`; };
 export const hue = k => { let h = 0; for (const c of norm(k)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
 export const todayStr = () => ymd(new Date());
-const cellStr = v => (v == null ? '' : typeof v === 'number' ? String(v) : String(v).trim());
+export const cellStr = v => (v == null ? '' : typeof v === 'number' ? String(v) : String(v).trim());
 
 export function parseCSV(t) {
   const rows = []; let r = [], c = '', q = false;

@@ -15,7 +15,7 @@ export default function Overview({ M, C, range, setRange, selDate, setSelDate, o
       <div className="grid">
         <div className="card">
           <div className="row">
-            <div><h2>Machines needed per day</h2><div className="sub">Select a day to see what runs on it</div></div>
+            <div><h2>Machines needed each day</h2><div className="sub">Click a bar to see that day on the right</div></div>
             <RangeToggle range={range} setRange={setRange} />
           </div>
           <div className="chart">

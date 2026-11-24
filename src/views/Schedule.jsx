@@ -18,11 +18,11 @@ export default function Schedule({ M, C, range, setRange, onOpenStyle }) {
   return (
     <div className="card">
       <div className="row">
-        <div><h2>Which style runs where</h2><div className="sub">Each bar is a run of days on the same style. Grey columns are days with no production.</div></div>
+        <div><h2>Which style runs where</h2><div className="sub">Each bar is a style running on a module. Grey columns are days with no production.</div></div>
         <RangeToggle range={range} setRange={setRange} />
       </div>
       <div className="gwrap">
-        <div className="gantt" style={{ gridTemplateColumns: `96px repeat(${N},minmax(46px,1fr))`, gridTemplateRows: `auto repeat(${R},46px)` }}>
+        <div className="gantt" style={{ gridTemplateColumns: `140px repeat(${N},minmax(66px,1fr))`, gridTemplateRows: `auto repeat(${R},58px)` }}>
           <div className="gh corner" style={{ gridColumn: 1, gridRow: 1 }}>Module</div>
           {ds.map((d, i) => <div key={d} className={'gh' + (d === today ? ' today' : '')} style={{ gridColumn: i + 2, gridRow: 1 }}><b>{dt(d).getDate()}</b>{WD[dt(d).getDay()]}</div>)}
           {M.modules.map((mod, r) => (
