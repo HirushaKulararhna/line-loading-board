@@ -72,7 +72,7 @@ export default function Summary({ M, C, machines }) {
         </div>
         <div className="twrap">
           <table className="sumtable">
-            <thead><tr><th className="l">Machine type</th><th>Purchased</th><th>Rented</th><th>Required</th><th>To rent</th><th>Rent more</th></tr></thead>
+            <thead><tr><th className="l">Machine type</th><th>Purchased</th><th>Rented</th><th>Required</th><th>To rent</th><th>Rent more / extra</th></tr></thead>
             <tbody>
               {rows.map(r => (
                 <tr key={r.key}>
@@ -82,7 +82,7 @@ export default function Summary({ M, C, machines }) {
                   <td className="mono">{r.need ? <b>{Math.max(0, r.need - r.owned) || ''}</b> : ''}</td>
                   <td>{!r.need ? <span className="muted">not in plan</span> : !r.found ? <span className="pill w">name not found</span>
                     : r.short > 0 ? <span className="pill bad">rent {r.short} more</span>
-                    : <span className="pill in">enough</span>}</td>
+                    : <span className="pill in">{r.gap} extra</span>}</td>
                 </tr>
               ))}
               {showOther && !q && other.length > 0 && <tr className="subhead"><td className="l" colSpan={6}>Machine types the plan does not use in these dates ({other.length})</td></tr>}
