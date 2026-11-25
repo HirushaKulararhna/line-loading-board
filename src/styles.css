@@ -259,3 +259,6 @@ tfoot td{font-size:16.5px}
 .linkbtn{padding:4px 12px;margin-left:8px;font-size:14.5px}
 .otherrow td{background:var(--bg)}
 .subhead td{background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:15.5px}
+.pillbtn{background:none;border:0;padding:0;cursor:pointer;border-radius:999px}
+.pillbtn:hover .pill{box-shadow:0 0 0 3px var(--primary-soft)}
+.pillbtn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}

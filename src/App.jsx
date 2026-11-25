@@ -67,7 +67,7 @@ export default function App() {
         {M && route === 'overview' && <Overview M={M} C={C} range={range} setRange={setRange} selDate={selDate} setSelDate={setPicked} onOpenStyle={setOpenCode} />}
         {M && route === 'schedule' && <Schedule M={M} C={C} range={range} setRange={setRange} onOpenStyle={setOpenCode} />}
         {M && route === 'machines' && <Machines M={M} C={C} range={range} setRange={setRange} q={q} setQ={setQ} />}
-        {M && route === 'summary' && <Summary M={M} C={C} machines={machines} />}
+        {M && route === 'summary' && <Summary M={M} C={C} machines={machines} onOpenStyle={setOpenCode} />}
         {M && route === 'fleet' && <Fleet M={M} C={C} machines={machines} opts={opts} setOpts={setOpts} range={range} setRange={setRange} />}
         {M && route === 'lines' && <Lines M={M} C={C} machines={machines} opts={opts} setOpts={setOpts} range={range} setRange={setRange} onOpenLine={setOpenLine} />}
         {M && route === 'list' && <MachineList machines={machines} filters={filters} setFilters={setFilters} />}

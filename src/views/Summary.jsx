@@ -1,17 +1,19 @@
 import { useMemo, useState } from 'react';
 import StackBar from '../components/StackBar';
+import TypeDrawer from '../components/TypeDrawer';
 import { compareFleet, fleetTotals, nm } from '../lib/machines';
 import { dt, fmtDay, todayStr, ymd } from '../lib/model';
 
 // Every registered machine counts here (owned, rented, any status) so the numbers match the machine list.
 const ALL = { rented: true, pending: true, maintenance: true };
 
-export default function Summary({ M, C, machines }) {
+export default function Summary({ M, C, machines, onOpenStyle }) {
   const first = M.dates[0], last = M.dates[M.dates.length - 1];
   const [from, setFrom] = useState(first);
   const [to, setTo] = useState(last);
   const [q, setQ] = useState('');
   const [showOther, setShowOther] = useState(false);
+  const [openKey, setOpenKey] = useState(null); // machine type whose details popup is open
   const list = machines ? machines.list : [];
   const dates = useMemo(() => M.dates.filter(d => d >= from && d <= to), [M, from, to]);
   const t = useMemo(() => fleetTotals(list), [list]);
@@ -62,7 +64,7 @@ export default function Summary({ M, C, machines }) {
 
       <div className="card">
         <h2>Machine types the plan needs</h2>
-        <div className="sub">Biggest shortage first. "Needed" is the most machines of that type used on one day in the chosen dates.</div>
+        <div className="sub">Click the last column of a row to see its machines and details. Biggest shortage first. "Needed" is the most machines of that type used on one day in the chosen dates.</div>
         <StackBar parts={[{ label: 'Purchased', n: t.owned, cls: 'c1' }, { label: 'Rented', n: t.rented, cls: 'c2' }]} />
         {cmp.notFound.length > 0 && <div className="notice" style={{ marginTop: 12 }}>{cmp.notFound.length} machine type{cmp.notFound.length > 1 ? 's' : ''} in the plan could not be found in the machine list ({cmp.notFoundNeed} machines). They are marked "name not found" below.</div>}
         <div className="bar2" style={{ marginTop: 14 }}>
@@ -80,9 +82,9 @@ export default function Summary({ M, C, machines }) {
                   <td className="mono">{r.owned}</td><td className="mono">{r.rented}</td>
                   <td className="mono">{r.need ? <><b>{r.need}</b><span className="sm"> {fmtDay(r.peakDate)}</span></> : <span className="muted">–</span>}</td>
                   <td className="mono">{r.need ? <b>{Math.max(0, r.need - r.owned) || ''}</b> : ''}</td>
-                  <td>{!r.need ? <span className="muted">not in plan</span> : !r.found ? <span className="pill w">name not found</span>
+                  <td><button className="pillbtn" onClick={() => setOpenKey(r.key)} title="Click for details">{!r.need ? <span className="pill mute">not in plan</span> : !r.found ? <span className="pill w">name not found</span>
                     : r.short > 0 ? <span className="pill bad">rent {r.short} more</span>
-                    : <span className="pill in">{r.gap} extra</span>}</td>
+                    : <span className="pill in">{r.gap} extra</span>}</button></td>
                 </tr>
               ))}
               {showOther && !q && other.length > 0 && <tr className="subhead"><td className="l" colSpan={6}>Machine types the plan does not use in these dates ({other.length})</td></tr>}
@@ -90,7 +92,7 @@ export default function Summary({ M, C, machines }) {
                 <tr key={'o' + r.key} className="otherrow">
                   <td className="l" title={r.name}>{r.name}</td>
                   <td className="mono">{r.owned}</td><td className="mono">{r.rented}</td>
-                  <td className="mono"><span className="muted">–</span></td><td className="mono" /><td><span className="muted">not in plan</span></td>
+                  <td className="mono"><span className="muted">–</span></td><td className="mono" /><td><button className="pillbtn" onClick={() => setOpenKey(r.key)} title="Click for details"><span className="pill mute">not in plan</span></button></td>
                 </tr>
               ))}
               {!rows.length && <tr><td className="l" colSpan={6}><div className="empty">{q ? 'No machine sub-category matches.' : 'No production planned in these dates.'}</div></td></tr>}
@@ -103,6 +105,7 @@ export default function Summary({ M, C, machines }) {
           </table>
         </div>
       </div>
+      {openKey && cmp.rows.find(r => r.key === openKey) && <TypeDrawer row={cmp.rows.find(r => r.key === openKey)} M={M} C={C} list={list} onClose={() => setOpenKey(null)} onOpenStyle={onOpenStyle} />}
     </>
   );
 }
