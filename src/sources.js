@@ -2,6 +2,7 @@
 import CONFIG from './config';
 import { buildModel, modelFromWorkbook } from './lib/model';
 import { machinesFromWorkbook, parseMachines } from './lib/machines';
+import { ticketsFromWorkbook } from './lib/tickets';
 
 const queryId = () => new URLSearchParams(location.search).get('sheet') || '';
 
@@ -21,4 +22,12 @@ export const MACHINE_SPEC = {
   tabs: [CONFIG.machines.googleTab],
   fromWorkbook: (XLSX, wb, name) => machinesFromWorkbook(XLSX, wb, name),
   fromRows: ([R]) => parseMachines(R, 'Google Sheet'),
+};
+
+export const TICKET_SPEC = {
+  key: 'tickets', label: 'Tickets',
+  projectFile: CONFIG.tickets.projectFile, pollSeconds: CONFIG.tickets.projectPollSeconds,
+  googleId: () => '', tabs: [],
+  fromWorkbook: (XLSX, wb, name) => ticketsFromWorkbook(XLSX, wb, name),
+  fromRows: () => { throw new Error('Tickets are read from an Excel file only.'); },
 };

@@ -262,3 +262,11 @@ tfoot td{font-size:16.5px}
 .pillbtn{background:none;border:0;padding:0;cursor:pointer;border-radius:999px}
 .pillbtn:hover .pill{box-shadow:0 0 0 3px var(--primary-soft)}
 .pillbtn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.linkcell{background:none;border:0;padding:0;font-weight:700;color:var(--primary);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+tr.picked td{background:var(--primary-soft)}
+/* the menu has many pages: let it scroll and keep it compact so every page shows */
+.rail{overflow-y:auto;gap:14px}
+.rail nav a{padding:8px 12px}
+.navgroup{padding:10px 12px 2px}
+.rail nav a svg{width:22px;height:22px}
+@media (max-width:820px){.rail{overflow-y:visible}}

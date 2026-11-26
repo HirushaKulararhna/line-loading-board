@@ -3,3 +3,7 @@ dist
 .DS_Store
 *.log
 ~$*
+
+# daily ticket reports contain staff names: keep them on your computer, not on GitHub
+public/data/tickets.xlsx
+public/data/Detailed Ticket*

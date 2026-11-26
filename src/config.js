@@ -19,6 +19,12 @@ export default {
     googleTab: 'Machine List',         // tab name when using Google Sheets
   },
 
+  // ---------- BREAKDOWN TICKETS (the daily "Detailed Ticket Info Report") ----------
+  tickets: {
+    projectFile: 'data/tickets.xlsx', // or use "Change tickets file" at the top and pick today's report
+    projectPollSeconds: 3,
+  },
+
   // ---------- NAME MATCHING ----------
   // The machine list and the Layout tab sometimes spell a machine differently.
   // "Name in machine list": "Name in Layout tab". Capital letters do not matter.

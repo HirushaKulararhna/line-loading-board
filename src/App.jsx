@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDataset } from './hooks/useDataset';
-import { PLAN_SPEC, MACHINE_SPEC } from './sources';
+import { PLAN_SPEC, MACHINE_SPEC, TICKET_SPEC } from './sources';
 import { compute, todayStr } from './lib/model';
 import { DEFAULT_OPTS, inventoryFromFleet } from './lib/machines';
 import { PAGES, HELP, Rail, TopBar } from './components/Chrome';
@@ -13,6 +13,9 @@ import Lines from './views/Lines';
 import MachineList from './views/MachineList';
 import Styles from './views/Styles';
 import Check from './views/Check';
+import Mechanics from './views/Mechanics';
+import Waiting from './views/Waiting';
+import Approvals from './views/Approvals';
 import StyleDrawer from './components/StyleDrawer';
 import LineDrawer from './components/LineDrawer';
 
@@ -22,9 +25,12 @@ const NO_FILTERS = { q: '', line: '', purchase: '', status: '', type: '' };
 export default function App() {
   const planSrc = useDataset(PLAN_SPEC);
   const machSrc = useDataset(MACHINE_SPEC);
+  const tickSrc = useDataset(TICKET_SPEC);
+  const T = tickSrc.model;
   const machines = machSrc.model;
   const [opts, setOpts] = useState(DEFAULT_OPTS); // which machines count as usable
   const [route, setRoute] = useState(routeFromHash());
+  const isTicketPage = ['mechanics', 'waiting', 'approvals'].includes(route);
   const [range, setRange] = useState('two');
   const [q, setQ] = useState('');
   const [picked, setPicked] = useState(null);
@@ -53,17 +59,22 @@ export default function App() {
 
   const bad = C ? Object.keys(C.unmapped).length : 0;
   const subtitle = HELP[route];
-  const toast = planSrc.toast || machSrc.toast;
+  const toast = planSrc.toast || machSrc.toast || tickSrc.toast;
+  const pending = T ? T.tickets.filter(t => t.status === 'Pending for Approval').length : 0;
 
   return (
     <div className="app">
-      <Rail route={route} badCount={bad} />
+      <Rail route={route} badges={{ check: bad, waiting: pending }} />
       <main>
-        <TopBar title={PAGES[route]} subtitle={subtitle} sources={[planSrc, machSrc]} />
-        {M && bad > 0 && route !== 'check' && (
+        <TopBar title={PAGES[route]} subtitle={subtitle} sources={isTicketPage ? [tickSrc] : [planSrc, machSrc]} />
+        {M && !isTicketPage && bad > 0 && route !== 'check' && (
           <div className="notice">{bad} scheduled style{bad > 1 ? 's have' : ' has'} no machine layout and {bad > 1 ? 'are' : 'is'} counted as zero. <a href="#check">See which</a></div>
         )}
-        {!M && <div className="card"><div className="empty">{planSrc.status.kind === 'err' ? planSrc.status.text : 'Loading your plan…'}</div></div>}
+        {isTicketPage && !T && <div className="card"><div className="empty">{tickSrc.status.kind === 'err' ? 'The ticket report is not loaded yet. Click "Change tickets file" at the top and pick the Detailed Ticket Info Report you downloaded.' : 'Loading tickets…'}</div></div>}
+        {T && route === 'mechanics' && <Mechanics T={T} />}
+        {T && route === 'waiting' && <Waiting T={T} />}
+        {T && route === 'approvals' && <Approvals T={T} />}
+        {!isTicketPage && !M && <div className="card"><div className="empty">{planSrc.status.kind === 'err' ? planSrc.status.text : 'Loading your plan…'}</div></div>}
         {M && route === 'overview' && <Overview M={M} C={C} range={range} setRange={setRange} selDate={selDate} setSelDate={setPicked} onOpenStyle={setOpenCode} />}
         {M && route === 'schedule' && <Schedule M={M} C={C} range={range} setRange={setRange} onOpenStyle={setOpenCode} />}
         {M && route === 'machines' && <Machines M={M} C={C} range={range} setRange={setRange} q={q} setQ={setQ} />}

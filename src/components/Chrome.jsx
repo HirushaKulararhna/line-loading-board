@@ -7,12 +7,16 @@ const ICON = {
   lines: <path d="M4 5h16M4 10h16M4 15h10M4 20h6" />,
   list: <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" />,
   styles: <path d="M5 4h14v16H5zM9 9h6M9 13h6" />,
+  mechanics: <path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z" />,
+  waiting: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
+  approvals: <path d="M4 12l5 5L20 6" />,
   check: <path d="M12 3l9 16H3zM12 10v4M12 17h.01" />,
 };
 export const PAGES = {
   overview: 'Overview', schedule: 'Schedule', styles: 'Styles', summary: 'Machine summary',
   machines: 'Machines needed per day', fleet: 'Have vs need', lines: 'Machines by line', list: 'All machines',
   check: 'Problems to fix',
+  mechanics: 'Mechanic hours', waiting: 'Waiting for approval', approvals: 'Approval time',
 };
 // Plain one-line explanation shown under each page title
 export const HELP = {
@@ -25,14 +29,18 @@ export const HELP = {
   lines: 'The machines on each line. Click a line to open it.',
   list: 'The full machine register. Use the filters to find a machine.',
   check: 'Styles in the plan that have no machine layout.',
+  mechanics: 'How many hours each mechanic worked on repairs, day by day.',
+  waiting: 'Repaired tickets that a supervisor has not approved yet.',
+  approvals: 'How long supervisors take to approve a repaired ticket.',
 };
 const GROUPS = [
   ['Production plan', ['overview', 'schedule', 'styles']],
   ['Machines', ['summary', 'machines', 'fleet', 'lines', 'list']],
   ['Checks', ['check']],
+  ['Breakdown tickets', ['mechanics', 'waiting', 'approvals']],
 ];
 
-export function Rail({ route, badCount }) {
+export function Rail({ route, badges = {} }) {
   return (
     <aside className="rail">
       <div className="brand">
@@ -47,7 +55,7 @@ export function Rail({ route, badCount }) {
               <a key={k} href={`#${k}`} aria-current={route === k ? 'page' : undefined}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{ICON[k]}</svg>
                 {PAGES[k]}
-                {k === 'check' && badCount > 0 && <span className="count">{badCount}</span>}
+                {badges[k] > 0 && <span className="count">{badges[k]}</span>}
               </a>
             ))}
           </div>
