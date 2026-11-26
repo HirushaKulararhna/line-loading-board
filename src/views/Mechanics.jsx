@@ -37,7 +37,7 @@ export default function Mechanics({ T }) {
               {H.rows.map(r => (
                 <tr key={r.name}>
                   <td className="l" title={r.name}>{r.name}</td>
-                  {H.dates.map(d => { const v = r.days[d] || 0; return <td key={d} className={(v ? 'h' : '') + ' mono'} style={v ? { '--t': (v / peak).toFixed(2) } : undefined}>{v ? <>{hours(v)}<span className="tk"> ({r.count[d]} tkt)</span></> : ''}</td>; })}
+                  {H.dates.map(d => { const v = r.days[d] || 0, n = r.count[d] || 0; return <td key={d} className={(v ? 'h' : '') + ' mono'} style={v ? { '--t': (v / peak).toFixed(2) } : undefined}>{n ? <>{hours(v)}<span className="tk"> ({n} tkt)</span></> : ''}</td>; })}
                   <td className="mono"><b>{hours(r.total)}</b></td>
                   <td className="mono">{r.tickets}</td>
                   <td className="mono">{r.workDays ? hours(r.total / r.workDays) : '–'}</td>
@@ -52,7 +52,7 @@ export default function Mechanics({ T }) {
             </tr></tfoot>
           </table>
         </div>
-        <p className="muted" style={{ marginTop: 12 }}>Hours are the "Repair Time" written on each ticket. They are counted on the day the repair finished. Tickets still being repaired are not included yet.</p>
+        <p className="muted" style={{ marginTop: 12 }}>Hours are the "Repair Time" written on each ticket. They are counted on the day the repair finished. Tickets still being repaired are not included yet. "0.0" means the ticket was completed but no repair time was written on it.</p>
       </div>
     </>
   );
