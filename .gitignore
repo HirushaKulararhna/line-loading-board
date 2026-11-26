@@ -4,6 +4,5 @@ dist
 *.log
 ~$*
 
-# daily ticket reports contain staff names: keep them on your computer, not on GitHub
-public/data/tickets.xlsx
+# the downloaded report keeps its long name: only public/data/tickets.xlsx is published
 public/data/Detailed Ticket*
