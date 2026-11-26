@@ -25,7 +25,7 @@ export default function Mechanics({ T }) {
 
       <div className="card">
         <h2>Hours each mechanic worked, per day</h2>
-        <div className="sub">Hours of repair time on the tickets they completed. Darker means more hours. Most hours first.</div>
+        <div className="sub">Hours of repair time on the tickets they completed. The small number in brackets is how many tickets that was (tkt = tickets). Darker means more hours. Most hours first.</div>
         <div className="twrap">
           <table className="sumtable">
             <thead><tr>
@@ -37,7 +37,7 @@ export default function Mechanics({ T }) {
               {H.rows.map(r => (
                 <tr key={r.name}>
                   <td className="l" title={r.name}>{r.name}</td>
-                  {H.dates.map(d => { const v = r.days[d] || 0; return <td key={d} className={(v ? 'h' : '') + ' mono'} style={v ? { '--t': (v / peak).toFixed(2) } : undefined}>{v ? hours(v) : ''}</td>; })}
+                  {H.dates.map(d => { const v = r.days[d] || 0; return <td key={d} className={(v ? 'h' : '') + ' mono'} style={v ? { '--t': (v / peak).toFixed(2) } : undefined}>{v ? <>{hours(v)}<span className="tk"> ({r.count[d]} tkt)</span></> : ''}</td>; })}
                   <td className="mono"><b>{hours(r.total)}</b></td>
                   <td className="mono">{r.tickets}</td>
                   <td className="mono">{r.workDays ? hours(r.total / r.workDays) : '–'}</td>
@@ -47,7 +47,7 @@ export default function Mechanics({ T }) {
             </tbody>
             <tfoot><tr>
               <td className="l">All mechanics</td>
-              {H.dates.map(d => <td key={d}>{hours(H.dayTotals[d])}</td>)}
+              {H.dates.map(d => <td key={d}>{hours(H.dayTotals[d])}<span className="tk"> ({H.dayCounts[d]} tkt)</span></td>)}
               <td>{hours(H.total)}</td><td>{H.tickets}</td><td />
             </tr></tfoot>
           </table>

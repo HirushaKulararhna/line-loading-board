@@ -270,3 +270,4 @@ tr.picked td{background:var(--primary-soft)}
 .navgroup{padding:10px 12px 2px}
 .rail nav a svg{width:22px;height:22px}
 @media (max-width:820px){.rail{overflow-y:visible}}
+.tk{font:500 13px var(--f-ui);color:var(--muted);margin-left:2px}

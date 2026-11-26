@@ -84,14 +84,15 @@ export function mechanicHours(tickets, from, to) {
     if (!t.mechanic || !t.repairEnd) continue;
     const d = t.repairEnd.date; if (d < from || d > to) continue;
     dates.add(d);
-    const m = by.get(t.mechanic) || { name: t.mechanic, days: {}, total: 0, tickets: 0 };
-    m.days[d] = (m.days[d] || 0) + t.repairMin; m.total += t.repairMin; m.tickets++;
+    const m = by.get(t.mechanic) || { name: t.mechanic, days: {}, count: {}, total: 0, tickets: 0 };
+    m.days[d] = (m.days[d] || 0) + t.repairMin; m.count[d] = (m.count[d] || 0) + 1; m.total += t.repairMin; m.tickets++;
     by.set(t.mechanic, m);
   }
   const ds = [...dates].sort();
   const rows = [...by.values()].map(m => ({ ...m, workDays: Object.values(m.days).filter(v => v > 0).length })).sort((a, b) => b.total - a.total);
   const dayTotals = Object.fromEntries(ds.map(d => [d, rows.reduce((a, m) => a + (m.days[d] || 0), 0)]));
-  return { rows, dates: ds, dayTotals, total: rows.reduce((a, m) => a + m.total, 0), tickets: rows.reduce((a, m) => a + m.tickets, 0) };
+  const dayCounts = Object.fromEntries(ds.map(d => [d, rows.reduce((a, m) => a + (m.count[d] || 0), 0)]));
+  return { rows, dates: ds, dayTotals, dayCounts, total: rows.reduce((a, m) => a + m.total, 0), tickets: rows.reduce((a, m) => a + m.tickets, 0) };
 }
 
 /* ---------- 2. waiting for approval ---------- */
