@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 const ICON = {
   overview: <path d="M4 13h6V4H4zM14 20h6V4h-6zM4 20h6v-4H4z" />,
   schedule: <path d="M4 6h10M4 12h16M8 18h12" />,
@@ -41,27 +42,46 @@ const GROUPS = [
 ];
 
 export function Rail({ route, badges = {} }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => { setOpen(false); }, [route]);
+  useEffect(() => {
+    if (!open) return;
+    const k = e => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', k);
+    return () => window.removeEventListener('keydown', k);
+  }, [open]);
   return (
-    <aside className="rail">
-      <div className="brand">
-        <div className="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"><path d="M4 7h16M4 12h10M4 17h16" /></svg></div>
-        Line Loading
-      </div>
-      <nav aria-label="Sections">
-        {GROUPS.map(([g, keys]) => (
-          <div key={g} style={{ display: 'contents' }}>
-            <div className="navgroup">{g}</div>
-            {keys.map(k => (
-              <a key={k} href={`#${k}`} aria-current={route === k ? 'page' : undefined}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{ICON[k]}</svg>
-                {PAGES[k]}
-                {badges[k] > 0 && <span className="count">{badges[k]}</span>}
-              </a>
-            ))}
-          </div>
-        ))}
-      </nav>
-    </aside>
+    <>
+      <header className="mbar">
+        <button className="menubtn" onClick={() => setOpen(true)} aria-label="Open menu" aria-expanded={open}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <span className="mtitle">{PAGES[route]}</span>
+        {badges.waiting > 0 && <a className="mbadge" href="#waiting" title="Tickets waiting for approval">{badges.waiting}</a>}
+      </header>
+      {open && <div className="rscrim" onClick={() => setOpen(false)} />}
+      <aside className={'rail' + (open ? ' open' : '')}>
+        <div className="brand">
+          <div className="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"><path d="M4 7h16M4 12h10M4 17h16" /></svg></div>
+          Line Loading
+          <button className="menuclose" onClick={() => setOpen(false)} aria-label="Close menu">✕</button>
+        </div>
+        <nav aria-label="Sections">
+          {GROUPS.map(([g, keys]) => (
+            <div key={g} style={{ display: 'contents' }}>
+              <div className="navgroup">{g}</div>
+              {keys.map(k => (
+                <a key={k} href={`#${k}`} aria-current={route === k ? 'page' : undefined} onClick={() => setOpen(false)}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{ICON[k]}</svg>
+                  {PAGES[k]}
+                  {badges[k] > 0 && <span className="count">{badges[k]}</span>}
+                </a>
+              ))}
+            </div>
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 }
 
