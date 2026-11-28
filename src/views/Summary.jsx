@@ -88,16 +88,16 @@ export default function Summary({ M, C, machines, onOpenStyle }) {
               {shown.map(r => r.olTotal ? (
                 <tr key="oltotal" className="subhead">
                   <td className="l">OVER LOCK – all types together</td>
-                  <td className="mono">{ol.owned}</td><td className="mono">{ol.rented}</td>
-                  <td className="mono"><b>{ol.need}</b></td><td className="mono"><b>{ol.toRent || ''}</b></td>
+                  <td className="mono" data-l="Purchased">{ol.owned}</td><td className="mono" data-l="Rented">{ol.rented}</td>
+                  <td className="mono" data-l="Required"><b>{ol.need}</b></td><td className="mono" data-l="To rent"><b>{ol.toRent || ''}</b></td>
                   <td>{ol.short > 0 ? <span className="pill bad">rent {ol.short} more</span> : ''}</td>
                 </tr>
               ) : (
                 <tr key={r.key}>
                   <td className="l" title={r.name}>{r.name}</td>
-                  <td className="mono">{r.owned}</td><td className="mono">{r.rented}</td>
-                  <td className="mono">{r.need ? <><b>{r.need}</b><span className="sm"> {fmtDay(r.peakDate)}</span></> : <span className="muted">–</span>}</td>
-                  <td className="mono">{r.need ? <b>{Math.max(0, r.need - r.owned) || ''}</b> : ''}</td>
+                  <td className="mono" data-l="Purchased">{r.owned}</td><td className="mono" data-l="Rented">{r.rented}</td>
+                  <td className="mono" data-l="Required">{r.need ? <><b>{r.need}</b><span className="sm"> {fmtDay(r.peakDate)}</span></> : <span className="muted">–</span>}</td>
+                  <td className="mono" data-l="To rent">{r.need ? <b>{Math.max(0, r.need - r.owned) || ''}</b> : ''}</td>
                   <td><button className="pillbtn" onClick={() => setOpenKey(r.key)} title="Click for details">{!r.need ? <span className="pill mute">not in plan</span> : !r.found ? <span className="pill w">name not found</span>
                     : r.short > 0 ? <span className="pill bad">rent {r.short} more</span>
                     : <span className="pill in">{r.gap} extra</span>}</button></td>
@@ -107,16 +107,16 @@ export default function Summary({ M, C, machines, onOpenStyle }) {
               {showOther && !q && otherSorted.map(r => (
                 <tr key={'o' + r.key} className="otherrow">
                   <td className="l" title={r.name}>{r.name}</td>
-                  <td className="mono">{r.owned}</td><td className="mono">{r.rented}</td>
-                  <td className="mono"><span className="muted">–</span></td><td className="mono" /><td><button className="pillbtn" onClick={() => setOpenKey(r.key)} title="Click for details"><span className="pill mute">not in plan</span></button></td>
+                  <td className="mono" data-l="Purchased">{r.owned}</td><td className="mono" data-l="Rented">{r.rented}</td>
+                  <td className="mono" data-l="Required"><span className="muted">–</span></td><td className="mono" data-l="To rent" /><td><button className="pillbtn" onClick={() => setOpenKey(r.key)} title="Click for details"><span className="pill mute">not in plan</span></button></td>
                 </tr>
               ))}
               {!rows.length && <tr><td className="l" colSpan={6}><div className="empty">{q ? 'No machine sub-category matches.' : 'No production planned in these dates.'}</div></td></tr>}
             </tbody>
             <tfoot>
-              <tr><td className="l">Types the plan uses</td><td>{planOwned}</td><td>{planRented}</td><td>{needed}</td><td>{toRent}</td><td>{lack ? `rent ${lack} more` : ''}</td></tr>
-              <tr><td className="l">Other types (not in plan, {other.length}) <button className="btn ghost linkbtn" onClick={() => { setShowOther(v => !v); setQ(''); }}>{showOther ? 'Hide list' : 'Show list'}</button></td><td>{otherOwned}</td><td>{otherRented}</td><td /><td /><td /></tr>
-              <tr><td className="l">All our machines</td><td>{planOwned + otherOwned}</td><td>{planRented + otherRented}</td><td /><td /><td /></tr>
+              <tr><td className="l">Types the plan uses</td><td data-l="Purchased">{planOwned}</td><td data-l="Rented">{planRented}</td><td data-l="Required">{needed}</td><td data-l="To rent">{toRent}</td><td>{lack ? `rent ${lack} more` : ''}</td></tr>
+              <tr><td className="l">Other types (not in plan, {other.length}) <button className="btn ghost linkbtn" onClick={() => { setShowOther(v => !v); setQ(''); }}>{showOther ? 'Hide list' : 'Show list'}</button></td><td data-l="Purchased">{otherOwned}</td><td data-l="Rented">{otherRented}</td><td /><td /><td /></tr>
+              <tr><td className="l">All our machines</td><td data-l="Purchased">{planOwned + otherOwned}</td><td data-l="Rented">{planRented + otherRented}</td><td /><td /><td /></tr>
             </tfoot>
           </table>
         </div>

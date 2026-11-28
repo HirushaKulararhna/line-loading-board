@@ -314,3 +314,24 @@ tr.picked td{background:var(--primary-soft)}
   .cards{grid-template-columns:1fr}
   .dsrc-body{min-width:0;width:min(280px,calc(100vw - 28px))}
 }
+
+/* ---- phone: Machine summary rows become cards (a 6-column table is unreadable on a phone) ---- */
+@media (max-width:820px){
+  .twrap:has(.sumtable){border:0;background:none;overflow:visible}
+  .sumtable,.sumtable tbody,.sumtable tfoot{display:block;width:100%;min-width:0}
+  .sumtable thead{display:none}
+  .sumtable tr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px 8px;padding:12px;margin-bottom:10px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+  .sumtable td,.sumtable tfoot td{display:block;position:static;height:auto;padding:0;border:0;text-align:left;white-space:normal;background:none;font-size:18px;min-width:0;max-width:none}
+  .sumtable td.l{grid-column:1/-1;font-size:17px;font-weight:700;overflow:visible;white-space:normal}
+  .sumtable td[data-l]::before{content:attr(data-l);display:block;font:600 11.5px var(--f-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .sumtable td:empty{visibility:hidden}
+  .sumtable td:last-child:not(.l){grid-column:1/-1;margin-top:4px}
+  .sumtable td:last-child:not(.l):empty{display:none}
+  .sumtable tr.subhead{display:block;background:var(--primary-soft);border-color:transparent;padding:10px 12px}
+  .sumtable tr.subhead td.l{color:var(--primary)}
+  .sumtable tr.subhead td[data-l]{display:inline-block;margin-right:14px}
+  .sumtable tr.otherrow{background:var(--bg)}
+  .sumtable tfoot tr{margin-top:4px}
+  .sumtable tfoot tr:last-child{background:var(--primary-soft)}
+  .sumtable tfoot tr:last-child td{background:none}
+}
