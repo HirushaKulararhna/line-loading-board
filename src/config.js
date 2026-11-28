@@ -42,6 +42,7 @@ export default {
     'ZIPPER CUTTER MACHINE': 'ZIPPER CUT MC',
     'COIN POCKET SETTER': 'COIN POCKET SETTERS',
     'BUTON ATTACHER': 'LOCK STICH BUTTON ATTACHER',
+    'THREAD SUCKING MACHINE': 'THRED SUCKER',
   },
   // Module name in the plan: Line name in the machine list (when they are spelled differently)
   lineAliases: {

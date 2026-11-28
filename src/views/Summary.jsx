@@ -26,6 +26,15 @@ export default function Summary({ M, C, machines, onOpenStyle }) {
     setFrom(a); setTo(ymd(e) > last ? last : ymd(e));
   };
   const rows = cmp.rows.filter(r => (q ? r.registered > 0 || r.need > 0 : r.need > 0) && (!q || nm(r.name).includes(nm(q)))).sort((a, b) => b.short - a.short || b.need - a.need);
+  // all OVER LOCK types (2T, 3T, 4T ...) are shown together in one block, with a total row
+  const isOL = r => /^OVER ?LOCK/i.test(nm(r.name));
+  const olRows = rows.filter(isOL).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  const shown = [];
+  rows.forEach(r => {
+    if (!isOL(r)) shown.push(r);
+    else if (r === rows.find(isOL)) { shown.push(...olRows); if (olRows.length > 1) shown.push({ olTotal: true }); }
+  });
+  const ol = olRows.reduce((a, r) => ({ owned: a.owned + r.owned, rented: a.rented + r.rented, need: a.need + r.need, toRent: a.toRent + Math.max(0, r.need - r.owned), short: a.short + r.short }), { owned: 0, rented: 0, need: 0, toRent: 0, short: 0 });
   const needed = rows.reduce((a, r) => a + r.need, 0);
   const lack = cmp.toAdd;
   // machine types the plan does not use in these dates, so the table footer adds up to ALL machines
@@ -76,7 +85,14 @@ export default function Summary({ M, C, machines, onOpenStyle }) {
           <table className="sumtable">
             <thead><tr><th className="l">Machine type</th><th>Purchased</th><th>Rented</th><th>Required</th><th>To rent</th><th>Rent more / extra</th></tr></thead>
             <tbody>
-              {rows.map(r => (
+              {shown.map(r => r.olTotal ? (
+                <tr key="oltotal" className="subhead">
+                  <td className="l">OVER LOCK – all types together</td>
+                  <td className="mono">{ol.owned}</td><td className="mono">{ol.rented}</td>
+                  <td className="mono"><b>{ol.need}</b></td><td className="mono"><b>{ol.toRent || ''}</b></td>
+                  <td>{ol.short > 0 ? <span className="pill bad">rent {ol.short} more</span> : ''}</td>
+                </tr>
+              ) : (
                 <tr key={r.key}>
                   <td className="l" title={r.name}>{r.name}</td>
                   <td className="mono">{r.owned}</td><td className="mono">{r.rented}</td>
